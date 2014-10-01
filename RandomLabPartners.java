@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2013-2014 Karl R. Wurst
- * 
+ * Copyright (C) 2013-2014 Karl R. Wurst
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -19,7 +19,8 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
-import java.io.*;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
@@ -33,29 +34,34 @@ import javax.swing.JFileChooser;
 
 /**
  * Reads a list of students from a file and assigns random lab partners.
- * 
+ *
  * @author Karl R. Wurst
  * @version 7 February 2014
  */
-public class RandomLabPartners extends JFrame implements ActionListener
-{
+public class RandomLabPartners extends JFrame implements ActionListener {
     private ArrayList<String> students = new ArrayList<String>();
     private ArrayList<JCheckBox> boxes = new ArrayList<JCheckBox>();
-    private JTextArea output = new JTextArea(20,50);
+    private final int TEXT_HEIGHT = 20;
+    private final int TEXT_WIDTH = 50;
+    private JTextArea output = new JTextArea(TEXT_HEIGHT, TEXT_WIDTH);
 
-    public RandomLabPartners(String title) {
+    /**
+     * Constructor for RandomLabPartners.
+     * @param title the window title
+     */
+    public RandomLabPartners(final String title) {
         super(title);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
         setContentPane(panel);
         panel.setLayout(new BorderLayout());
         JPanel boxPanel = new JPanel();
-        boxPanel.setLayout(new GridLayout(0,1));
+        boxPanel.setLayout(new GridLayout(0, 1));
 
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
         String filename = chooser.getSelectedFile().getName();
-        
+
         FileReader file = null;
         try {
             file = new FileReader(filename);
@@ -74,20 +80,23 @@ public class RandomLabPartners extends JFrame implements ActionListener
             boxes.add(box);
         }
         panel.add(boxPanel, BorderLayout.WEST);
-        
+
         JButton button = new JButton("Assign Lab Partners");
         button.addActionListener(this);
         panel.add(button, BorderLayout.SOUTH);
-        
+
         panel.add(output, BorderLayout.CENTER);
 
         pack();
         setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent e) {
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public final void actionPerformed(final ActionEvent e) {
         String partners = null;
-        
+
         //ArrayList<String> current = new ArrayList<String>(students);
         ArrayList<String> current = new ArrayList<String>();
 
@@ -97,18 +106,17 @@ public class RandomLabPartners extends JFrame implements ActionListener
             }
         }
         //System.out.println(current);
-        
-        
-        boolean OK = false;
-        while (!OK) {
+
+        boolean ok = false;
+        while (!ok) {
             Collections.shuffle(current);
 
-            OK = true;
+            ok = true;
             int i = 0;
             while (i < current.size()) {
-                partners = current.get(i) + " and " + current.get(i+1);
-                if (i+2 == current.size()-1) {
-                    partners = partners + " and " + current.get(i+2);
+                partners = current.get(i) + " and " + current.get(i + 1);
+                if (i + 2 == current.size() - 1) {
+                    partners = partners + " and " + current.get(i + 2);
                     i++;
                 }
 
@@ -121,9 +129,10 @@ public class RandomLabPartners extends JFrame implements ActionListener
         int count = 1;
         output.setText("Randomly assigned lab partners:\n");
         while (i < current.size()) {
-            partners = count + ". " + current.get(i) + " and " + current.get(i+1);
-            if (i+2 == current.size()-1) {
-                partners = partners + " and " + current.get(i+2);
+            partners = count + ". " + current.get(i) + " and "
+                    + current.get(i + 1);
+            if (i + 2 == current.size() - 1) {
+                partners = partners + " and " + current.get(i + 2);
                 i++;
             }
 
@@ -133,8 +142,11 @@ public class RandomLabPartners extends JFrame implements ActionListener
         }
     }
 
-    public static void main(String[] args) 
-    {
+    /**
+     * Main method.
+     * @param args command line arguments
+     */
+    public static void main(final String[] args) {
         new RandomLabPartners("Lab Partner Assigner");
     }
 }
