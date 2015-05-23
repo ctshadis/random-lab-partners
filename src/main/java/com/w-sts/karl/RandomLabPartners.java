@@ -54,22 +54,8 @@ public class RandomLabPartners extends JFrame implements ActionListener
         JPanel boxPanel = new JPanel();
         boxPanel.setLayout(new GridLayout(0,1));
 
-        JFileChooser chooser = new JFileChooser();
-        chooser.showOpenDialog(null);
-        String filename = chooser.getSelectedFile().getAbsolutePath();
-        
-        FileReader file = null;
-        try {
-            file = new FileReader(filename);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        Scanner scan = new Scanner(file);
-        while (scan.hasNext()) {
-            students.add(scan.next() + " " + scan.next());
-        }
-
+	students = readStudentsFromFile();
+	
         for (String student:students) {
             JCheckBox box = new JCheckBox(student, true);
             boxPanel.add(box);
@@ -87,6 +73,31 @@ public class RandomLabPartners extends JFrame implements ActionListener
         setVisible(true);
     }
 
+    private ArrayList<String> readStudentsFromFile() {
+	ArrayList<String> students = new ArrayList<String>();
+	JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        String filename = chooser.getSelectedFile().getAbsolutePath();
+        
+        FileReader file = null;
+        try {
+            file = new FileReader(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Scanner scan = new Scanner(file);
+	scan.nextLine();
+	
+        while (scan.hasNextLine()) {
+	    String line = scan.nextLine();
+	    String[] parts = line.split(",");
+            students.add( parts[1].substring(1, parts[1].length()-1) + " " + parts[0].substring(1, parts[0].length()-1));
+        }
+	
+	return students;
+
+    }
     public void actionPerformed(ActionEvent e) {
         String partners = null;
         
