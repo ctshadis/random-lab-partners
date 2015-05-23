@@ -16,6 +16,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+package com.w_sts.karl;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -54,7 +56,7 @@ public class RandomLabPartners extends JFrame implements ActionListener
 
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
-        String filename = chooser.getSelectedFile().getName();
+        String filename = chooser.getSelectedFile().getAbsolutePath();
         
         FileReader file = null;
         try {
