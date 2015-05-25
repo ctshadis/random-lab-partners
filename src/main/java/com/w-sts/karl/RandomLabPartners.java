@@ -96,54 +96,52 @@ public class RandomLabPartners extends JFrame implements ActionListener
         }
 	
 	return students;
-
     }
+    
     public void actionPerformed(ActionEvent e) {
-        String partners = null;
+        String partners;
         
-        //ArrayList<String> current = new ArrayList<String>(students);
         ArrayList<String> current = new ArrayList<String>();
 
+	current = getCheckedStudents();
+	partners = assignPartners(current);
+        output.setText("Randomly assigned lab partners:\n");
+	output.append(partners);
+	
+    }
+
+    private ArrayList<String> getCheckedStudents() {
+	ArrayList<String> current = new ArrayList<String>();
+	
         for (int i = 0; i < students.size(); i++) {
             if (boxes.get(i).isSelected()) {
                 current.add(boxes.get(i).getText());
             }
         }
-        //System.out.println(current);
-        
-        
-        boolean OK = false;
-        while (!OK) {
-            Collections.shuffle(current);
 
-            OK = true;
-            int i = 0;
-            while (i < current.size()) {
-                partners = current.get(i) + " and " + current.get(i+1);
-                if (i+2 == current.size()-1) {
-                    partners = partners + " and " + current.get(i+2);
-                    i++;
-                }
+	return current;
+    }
 
-                //System.out.println(partners);
-                i = i + 2;
-            }
-        }
+    private String assignPartners(ArrayList<String> current) {
+	String partners = "";
 
+	Collections.shuffle(current);
+	
         int i = 0;
         int count = 1;
-        output.setText("Randomly assigned lab partners:\n");
         while (i < current.size()) {
-            partners = count + ". " + current.get(i) + " and " + current.get(i+1);
+            partners = partners + count + ". " + current.get(i) + " and " + current.get(i+1);
             if (i+2 == current.size()-1) {
                 partners = partners + " and " + current.get(i+2);
                 i++;
             }
 
-            output.append(partners + "\n");
+            partners = partners + "\n";
             i = i + 2;
             count++;
         }
+
+	return partners;
     }
 
     public static void main(String[] args) 
