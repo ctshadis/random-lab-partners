@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2014 Karl R. Wurst
+ *  Copyright (C) 2013-2015 Karl R. Wurst
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,53 +37,29 @@ import javax.swing.JFileChooser;
  * Reads a list of students from a file and assigns random lab partners.
  * 
  * @author Karl R. Wurst
- * @version 7 February 2014
  */
 public class RandomLabPartners extends JFrame implements ActionListener
 {
-    private ArrayList<String> students = new ArrayList<String>();
-    private ArrayList<JCheckBox> boxes = new ArrayList<JCheckBox>();
-    private JTextArea output = new JTextArea(20,50);
+    private ArrayList<String> studentList = new ArrayList<String>();
+    private ArrayList<JCheckBox> checkBoxList = new ArrayList<JCheckBox>();
+    private JTextArea outputArea = new JTextArea(20,50);
 
     public RandomLabPartners(String title) {
         super(title);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel panel = new JPanel();
-        setContentPane(panel);
-        panel.setLayout(new BorderLayout());
-        JPanel boxPanel = new JPanel();
-        boxPanel.setLayout(new GridLayout(0,1));
-
-	students = readStudentsFromFile();
-	
-        for (String student:students) {
-            JCheckBox box = new JCheckBox(student, true);
-            boxPanel.add(box);
-            boxes.add(box);
-        }
-        panel.add(boxPanel, BorderLayout.WEST);
-        
-        JButton button = new JButton("Assign Lab Partners");
-        button.addActionListener(this);
-        panel.add(button, BorderLayout.SOUTH);
-        
-        panel.add(output, BorderLayout.CENTER);
-
-        pack();
-        setVisible(true);
+	studentList = readStudentsFromFile();
+	setUpWindow(studentList);	
     }
 
     private ArrayList<String> readStudentsFromFile() {
 	ArrayList<String> students = new ArrayList<String>();
-	JFileChooser chooser = new JFileChooser();
-        chooser.showOpenDialog(null);
-        String filename = chooser.getSelectedFile().getAbsolutePath();
+	String filename = getNamesFileFromUser();
         
         FileReader file = null;
         try {
             file = new FileReader(filename);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+	    System.exit(-1);
         }
 
         Scanner scan = new Scanner(file);
@@ -98,24 +74,53 @@ public class RandomLabPartners extends JFrame implements ActionListener
 	return students;
     }
     
-    public void actionPerformed(ActionEvent e) {
-        String partners;
-        
-        ArrayList<String> current = new ArrayList<String>();
+    private String getNamesFileFromUser() {
+	JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        return chooser.getSelectedFile().getAbsolutePath();
+    }
 
-	current = getCheckedStudents();
-	partners = assignPartners(current);
-        output.setText("Randomly assigned lab partners:\n");
-	output.append(partners);
-	
+    private void setUpWindow(ArrayList<String> studentList) {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
+        setContentPane(panel);
+        panel.setLayout(new BorderLayout());
+
+        JPanel boxPanel = new JPanel();
+        boxPanel.setLayout(new GridLayout(0,1));
+        for (String student:studentList) {
+            JCheckBox box = new JCheckBox(student, true);
+            boxPanel.add(box);
+            checkBoxList.add(box);
+        }
+        panel.add(boxPanel, BorderLayout.WEST);
+        
+        JButton button = new JButton("Assign Lab Partners");
+        button.addActionListener(this);
+        panel.add(button, BorderLayout.SOUTH);
+        
+        panel.add(outputArea, BorderLayout.CENTER);
+
+        pack();
+        setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        ArrayList<String> checkedStudents = new ArrayList<String>();
+        String partners;
+
+	checkedStudents = getCheckedStudents();
+	partners = assignPartners(checkedStudents);
+        outputArea.setText("Randomly assigned lab partners:\n");
+	outputArea.append(partners);	
     }
 
     private ArrayList<String> getCheckedStudents() {
 	ArrayList<String> current = new ArrayList<String>();
 	
-        for (int i = 0; i < students.size(); i++) {
-            if (boxes.get(i).isSelected()) {
-                current.add(boxes.get(i).getText());
+        for (int i = 0; i < studentList.size(); i++) {
+            if (checkBoxList.get(i).isSelected()) {
+                current.add(checkBoxList.get(i).getText());
             }
         }
 
