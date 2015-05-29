@@ -32,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextArea;
 import javax.swing.JFileChooser;
+import java.awt.Font;
 
 /**
  * Reads a list of students from a file and assigns random lab partners.
@@ -81,7 +82,8 @@ public class RandomLabPartners extends JFrame implements ActionListener
     }
 
     private void setUpWindow(ArrayList<String> studentList) {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	Font font = new Font("Verdana", Font.BOLD, 16);
+	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
         setContentPane(panel);
         panel.setLayout(new BorderLayout());
@@ -90,6 +92,7 @@ public class RandomLabPartners extends JFrame implements ActionListener
         boxPanel.setLayout(new GridLayout(0,1));
         for (String student:studentList) {
             JCheckBox box = new JCheckBox(student, true);
+	    box.setFont(font);
             boxPanel.add(box);
             checkBoxList.add(box);
         }
@@ -99,6 +102,7 @@ public class RandomLabPartners extends JFrame implements ActionListener
         button.addActionListener(this);
         panel.add(button, BorderLayout.SOUTH);
         
+	outputArea.setFont(font);
         panel.add(outputArea, BorderLayout.CENTER);
 
         pack();
